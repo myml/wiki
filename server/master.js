@@ -188,8 +188,20 @@ module.exports = async () => {
     } else {
       res.status(err.status || 500)
       _.set(res.locals, 'pageMeta.title', 'Error')
+      // TODO 错误国际化
+      const isZH = req.headers['accept-language'].startsWith("zh");
+      const title = isZH ? '知识的分享欢迎你！' : 'Come here to share and gain knowledge!'
+      let message = err.message
+      if(message.includes("|")){
+        if(isZH){
+          message = message.slice(0,message.indexOf("|"))
+        }else(
+          message = message.slice(message.indexOf("|")+1)
+        )
+      }
       res.render('error', {
-        message: err.message,
+        message: message,
+        title: title,
         error: WIKI.IS_DEBUG ? err : {}
       })
     }
