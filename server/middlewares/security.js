@@ -28,7 +28,7 @@ module.exports = function (req, res, next) {
 
   // -> Disables referrer header when navigating to a different origin
   if (WIKI.config.security.securityReferrerPolicy) {
-    res.set('Referrer-Policy', 'same-origin')
+    res.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   }
 
   // -> Enforce HSTS
