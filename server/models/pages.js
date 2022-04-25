@@ -789,12 +789,9 @@ module.exports = class Page extends Model {
   static async deletePage(opts) {
     let page
     if (_.has(opts, 'id')) {
-      page = await WIKI.models.pages.query().findById(opts.id)
+      page = await WIKI.models.pages.getPageFromDb(opts.id) 
     } else {
-      page = await WIKI.models.pages.query().findOne({
-        path: opts.path,
-        localeCode: opts.locale
-      })
+      page = await WIKI.models.pages.getPageFromDb(opts)
     }
     if (!page) {
       throw new WIKI.Error.PageNotFound()
