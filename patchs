@@ -1,0 +1,16 @@
+## cat patchs|grep -Ev '^#'|xargs git cherry-pick
+
+# fix(logout): Invalidate user jwt token after logout
+37f3f04d8c3b271d281eb4eb433e98cb135f52c0
+# feat: password encrypted transmission
+06c26b953f807ba453aa281208e72ff23d5080e1
+# feat: docker build faster
+5629a7739dbac7144dd35b1cc728a01bf1f72bb2
+# chore: disable dev flag
+9a9b54bb6f0e7fa31cc633795b8ab57bd87dbe67
+# feat: error page
+a3d8ce86e9afb9fbe807573dbb65b1de1752b098
+# feat: change referrer policy
+f66515bb4fd42f22e9ec0ddbe51a78cd53054eca
+# feat: add patchs file
+0d592aad8c47994bb2703a5efe995bbd3ca4e254
