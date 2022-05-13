@@ -28,6 +28,22 @@
         v-icon(left) mdi-navigation
         .body-2.text-none {{$t('common:sidebar.mainMenu')}}
     v-divider
+    v-treeview(
+      activatable
+      open-on-click
+      :items="treeItems"
+      :load-children="fetchItems"
+      @update:active="treeActive"
+      @update:open="treeActive"
+    )
+      template(v-slot:prepend="{ item, open }")
+        v-icon(v-if="!item.children") mdi-text-box
+        v-icon(v-else-if="open") mdi-folder-open
+        v-icon(v-else) mdi-folder
+      template(v-slot:label="{ item }")
+        a(v-if="!item.children" :href="'/'+item.locale+'/'+item.name")
+          span {{item.name}}
+        span(v-else) {{item.name}}
     //-> Custom Navigation
     v-list.py-2(v-if='currentMode === `custom`', dense, :class='color', :dark='dark')
       template(v-for='item of items')
@@ -102,12 +118,21 @@ export default {
         title: '/ (root)'
       },
       parents: [],
-      loadedCache: []
+      loadedCache: [],
+      treeItems: []
     }
   },
   computed: {
     path: get('page/path'),
     locale: get('page/locale')
+  },
+  watch: {
+    currentItems: {
+      handler: function(items) {
+        this.treeItems = items.map(item =>this.currentItem2TreeeItem(item))
+      },
+      immediate: true
+    }
   },
   methods: {
     switchMode (mode) {
@@ -219,7 +244,52 @@ export default {
     },
     goHome () {
       window.location.assign(siteLangs.length > 0 ? `/${this.locale}/home` : '/')
-    }
+    },
+    currentItem2TreeeItem(item) {
+      if (item.isFolder) {
+        return { id: item.id, path: item.path, locale: item.locale, name: item.title, children: [] }
+      } else {
+        return { id: item.id, path: item.path, locale: item.locale, name: item.title }
+      }
+    },
+    async fetchItems(item) {
+      const children = await this.fetchTree(item.id)
+      item.children.push(
+        ...children.map(item => this.currentItem2TreeeItem(item))
+      )
+    },
+    async fetchTree(id) {
+      const resp = await this.$apollo.query({
+        query: gql`
+          query($parent: Int, $locale: String!) {
+            pages {
+              tree(parent: $parent, mode: ALL, locale: $locale) {
+                id
+                path
+                title
+                isFolder
+                pageId
+                parent
+                locale
+              }
+            }
+          }
+        `,
+        fetchPolicy: 'cache-first',
+        variables: {
+          parent: id,
+          locale: this.locale
+        }
+      })
+      return _.get(resp, 'data.pages.tree', [])
+    },
+    treeActive(ids) {
+      if( ids.length == 0){
+        return
+      }
+      const selectedID = ids[0]
+      console.log("selected",selectedID)
+    },
   },
   mounted () {
     this.currentParent.title = `/ ${this.$t('common:sidebar.root')}`
