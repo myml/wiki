@@ -14,19 +14,10 @@
         depressed
         :color='$vuetify.theme.dark ? `grey darken-4` : `blue darken-2`'
         style='flex: 1 1 100%;'
-        @click='switchMode(`browse`)'
-        )
-        v-icon(left) mdi-file-tree
-        .body-2.text-none {{$t('common:sidebar.browse')}}
-      v-btn.ml-3(
-        v-else-if='currentMode === `browse`'
-        depressed
-        :color='$vuetify.theme.dark ? `grey darken-4` : `blue darken-2`'
-        style='flex: 1 1 100%;'
         @click='switchMode(`tree`)'
         )
         v-icon(left) mdi-file-tree
-        .body-2.text-none {{$t('common:sidebar.tree')}}
+        .body-2.text-none {{$t('common:sidebar.browse')}}
       v-btn.ml-3(
         v-else-if='currentMode === `tree`'
         depressed
@@ -356,7 +347,7 @@ export default {
       this.currentMode = window.localStorage.getItem('navPref') || 'custom'
     }
     if (this.currentMode === 'browse') {
-      this.loadFromCurrentPath()
+      this.currentMode = 'tree'
     }
     if (this.currentMode === "tree") {
       this.fetchTreeRoot();
