@@ -149,6 +149,10 @@ export default {
       type: String,
       default: new Date().toISOString()
     },
+    titleLocales: {
+      type: Array,
+      default: () => []
+    },
     effectivePermissions: {
       type: String,
       default: ''
@@ -224,6 +228,7 @@ export default {
     this.$store.set('page/title', this.title)
     this.$store.set('page/scriptCss', this.scriptCss)
     this.$store.set('page/scriptJs', this.scriptJs)
+    this.$store.set('page/titleLocales', this.titleLocales)
 
     this.$store.set('page/mode', 'edit')
 
@@ -410,6 +415,7 @@ export default {
                 $scriptJs: String
                 $tags: [String]
                 $title: String
+                $titleLocales: [PageLocaleTitle]
               ) {
                 pages {
                   update(
@@ -427,6 +433,7 @@ export default {
                     scriptJs: $scriptJs
                     tags: $tags
                     title: $title
+                    titleLocales: $titleLocales
                   ) {
                     responseResult {
                       succeeded
@@ -455,6 +462,7 @@ export default {
               scriptCss: this.$store.get('page/scriptCss'),
               scriptJs: this.$store.get('page/scriptJs'),
               tags: this.$store.get('page/tags'),
+              titleLocales: this.$store.get('page/titleLocales'),
               title: this.$store.get('page/title')
             }
           })

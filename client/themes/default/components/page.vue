@@ -478,6 +478,10 @@ export default {
       type: String,
       default: ''
     },
+    titleLocales: {
+      type: Array,
+      default: () => []
+    },
     commentsExternal: {
       type: Boolean,
       default: false
@@ -600,6 +604,7 @@ export default {
     }
 
     this.$store.set('page/mode', 'view')
+    this.$store.set('page/titleLocales', this.titleLocales)
   },
   mounted () {
     if (this.$vuetify.theme.dark) {

@@ -31,8 +31,20 @@
               outlined
               :label='$t(`editor:props.title`)'
               counter='255'
-              v-model='title'
+              :value='titles[locale]'
+              @input="changeTitle(locale, $event)"
               )
+            v-text-field(
+              ref='iptTitle'
+              outlined
+              v-for="lang in namespaces"
+              :key="lang"
+              v-if="lang !== locale && mode !== 'create'"
+              :label='$t(`editor:props.title`) + " - " + lang'
+              counter='255'
+              :value="titles[lang]"
+              @input="changeTitle(lang, $event)"
+            )
             v-text-field(
               outlined
               :label='$t(`editor:props.shortDescription`)'
@@ -41,6 +53,7 @@
               persistent-hint
               :hint='$t(`editor:props.shortDescriptionHint`)'
               )
+
           v-divider
           v-card-text.grey.pt-5(:class='$vuetify.theme.dark ? `darken-3-d3` : `lighten-5`')
             .overline.pb-5 {{$t('editor:props.path')}}
@@ -290,6 +303,7 @@ export default {
     },
     mode: get('editor/mode'),
     title: sync('page/title'),
+    titleLocales: sync('page/titleLocales'),
     description: sync('page/description'),
     locale: sync('page/locale'),
     tags: sync('page/tags'),
@@ -301,6 +315,19 @@ export default {
     scriptCss: sync('page/scriptCss'),
     hasScriptPermission: get('page/effectivePermissions@pages.script'),
     hasStylePermission: get('page/effectivePermissions@pages.style'),
+    titles: {
+      get() {
+        const newValue = this.titleLocales || []
+        const result =  newValue.reduce((obj, item)=>({...obj, [item.localeCode]: item.localeTitle}), {})
+        return {...result, [this.locale]: this.title}
+      },
+      set(newValue) {
+        this.title = newValue[this.locale]
+        this.titleLocales = Object.keys(newValue).filter(key=>newValue[key]).map(key=>{
+          return {localeCode: key, localeTitle: newValue[key] }
+        })
+      },
+    },
     pageSelectorMode () {
       return (this.mode === 'create') ? 'create' : 'move'
     }
@@ -344,6 +371,10 @@ export default {
     }
   },
   methods: {
+    changeTitle(locale, title) {
+      console.log("titles", this.titles)
+      this.titles={...this.titles || {} , [locale]: title}
+    },
     removeTag (tag) {
       this.tags = _.without(this.tags, tag)
     },

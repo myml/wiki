@@ -231,7 +231,8 @@ router.get(['/e', '/e/*'], async (req, res, next) => {
     }
   }
 
-  res.render('editor', { page, injectCode, effectivePermissions })
+  const titleLocales = await WIKI.models.titles.getTitleLocales({title: page.title, locale: page.localeCode})
+  res.render('editor', { page, injectCode, effectivePermissions, titleLocales })
 })
 
 /**
@@ -548,6 +549,8 @@ router.get('/*', async (req, res, next) => {
           let pageFilename = WIKI.config.lang.namespacing ? `${pageArgs.locale}/${page.path}` : page.path
           pageFilename += page.contentType === 'markdown' ? '.md' : '.html'
 
+          const titleLocales = await WIKI.models.titles.getTitleLocales({title: page.title, locale: page.localeCode})
+
           // -> Render view
           res.render('page', {
             page,
@@ -555,7 +558,8 @@ router.get('/*', async (req, res, next) => {
             injectCode,
             comments: commentTmpl,
             effectivePermissions,
-            pageFilename
+            pageFilename,
+            titleLocales
           })
         }
       } else if (pageArgs.path === 'home') {
