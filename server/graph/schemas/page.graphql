@@ -110,6 +110,7 @@ type PageMutation {
     scriptJs: String
     tags: [String]
     title: String
+    titleLocales: [PageLocaleTitle]
   ): PageResponse @auth(requires: ["write:pages", "manage:pages", "manage:system"])
 
   convert(
@@ -202,6 +203,11 @@ type Page {
   creatorId: Int! @auth(requires: ["write:pages", "manage:system"])
   creatorName: String! @auth(requires: ["write:pages", "manage:system"])
   creatorEmail: String! @auth(requires: ["write:pages", "manage:system"])
+}
+
+input PageLocaleTitle {
+  localeCode: String!
+  localeTitle: String!
 }
 
 type PageTag {

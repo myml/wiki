@@ -307,6 +307,7 @@ export default {
     pictureUrl: get('user/pictureUrl'),
     isAuthenticated: get('user/authenticated'),
     permissions: get('user/permissions'),
+    titleLocales: get('page/titleLocales'),
     picture () {
       if (this.pictureUrl && this.pictureUrl.length > 1) {
         return {
@@ -465,6 +466,15 @@ export default {
     },
     async changeLocale (locale) {
       await this.$i18n.i18next.changeLanguage(locale.code)
+
+      if (this.titleLocales && this.titleLocales.length) {
+        const t = this.titleLocales.find(tl => tl.localeCode == locale.code)
+        if(t){
+          window.location.assign(`/${locale.code}/${t.localeTitle}`)
+          return
+        }
+      }
+
       switch (this.mode) {
         case 'view':
         case 'history':

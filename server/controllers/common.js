@@ -230,7 +230,8 @@ router.get(['/e', '/e/*'], async (req, res, next) => {
     }
   }
 
-  res.render('editor', { page, injectCode, effectivePermissions })
+  const titleLocales = await WIKI.models.titles.getTitleLocales({title: page.title, locale: page.localeCode})
+  res.render('editor', { page, injectCode, effectivePermissions, titleLocales })
 })
 
 /**
@@ -542,13 +543,17 @@ router.get('/*', async (req, res, next) => {
             })
           }
 
+
+          const titleLocales = await WIKI.models.titles.getTitleLocales({title: page.title, locale: page.localeCode})
+
           // -> Render view
           res.render('page', {
             page,
             sidebar,
             injectCode,
             comments: commentTmpl,
-            effectivePermissions
+            effectivePermissions,
+            titleLocales
           })
         }
       } else if (pageArgs.path === 'home') {

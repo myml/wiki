@@ -18,6 +18,7 @@ const state = {
   mode: '',
   scriptJs: '',
   scriptCss: '',
+  titleLocales: [],
   effectivePermissions: {
     comments: {
       read: false,

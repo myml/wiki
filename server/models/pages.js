@@ -438,6 +438,8 @@ module.exports = class Page extends Model {
     }).where('id', ogPage.id)
     let page = await WIKI.models.pages.getPageFromDb(ogPage.id)
 
+    // -> Save locale title
+    await WIKI.models.titles.updateTitles({ titles: opts.titleLocales, id: page.id, title: opts.title, locale: opts.locale })
     // -> Save Tags
     await WIKI.models.tags.associateTags({ tags: opts.tags, page })
 

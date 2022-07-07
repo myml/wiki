@@ -29,6 +29,7 @@ block body
       comments-enabled=config.features.featurePageComments
       effective-permissions=Buffer.from(JSON.stringify(effectivePermissions)).toString('base64')
       comments-external=comments.codeTemplate
+      :title-locales=titleLocales
       )
       template(slot='contents')
         div!= page.render
