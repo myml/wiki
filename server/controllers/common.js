@@ -17,9 +17,43 @@ router.get('/robots.txt', (req, res, next) => {
   if (_.includes(WIKI.config.seo.robots, 'noindex')) {
     res.send('User-agent: *\nDisallow: /')
   } else {
-    res.status(200).end()
+    res.send('User-agent: *\nDisallow: /a/')
   }
 })
+
+/**
+ * Sitemap.xml
+ */
+ router.get('/sitemap.xml', async function (req, res) {
+  const host = WIKI.config.host
+  const xmlTree = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+  ]
+
+  try {
+    const pages = await WIKI.models.pages.query()
+      .select(['path', 'localeCode', 'updatedAt'])
+      .where('isPublished', '=', true)
+      .where('isPrivate', '=', false)
+
+    pages.forEach(page => {
+      // Fix checkAccess attr
+      page.locale = page.localeCode
+
+      const date = moment(page.updatedAt).format()
+      xmlTree.push(`<url><loc><![CDATA[${host}/${page.localeCode}/${page.path}]]></loc><lastmod>${date}</lastmod></url>\n`)
+    })
+
+    xmlTree.push('</urlset>')
+
+    res.header('Content-Type', 'application/xml').send(xmlTree.join(''))
+  } catch (e) {
+    console.log(e)
+    res.status(404).end()
+  }
+})
+
 
 /**
  * Health Endpoint
