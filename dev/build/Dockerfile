@@ -14,7 +14,6 @@ COPY ./.babelrc ./.babelrc
 COPY ./.eslintignore ./.eslintignore
 COPY ./.eslintrc.yml ./.eslintrc.yml
 
-RUN yarn config set registry https://registry.npmmirror.com/
 RUN yarn cache clean
 RUN yarn --frozen-lockfile --non-interactive
 RUN yarn build
