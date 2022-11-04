@@ -1,0 +1,43 @@
+key: markdownWikiLinks
+title: Wiki Links
+description: Enable WikiMedia link markup
+author: deepin.org
+icon: mdi-link-variant
+enabledDefault: true
+dependsOn: markdownCore
+props: 
+  baseURL:
+    type: String
+    default: /
+    title: baseURL
+    hint: The base URL for absolute wiki links.
+    order: 1
+    public: true
+  relativeBaseURL:
+    type: String
+    default: ./
+    title: PlantUML Server
+    hint: PlantUML server used for image generation
+    order: 2
+    public: true
+  makeAllLinksAbsolute:
+    type: Boolean
+    title: MakeAllLinksAbsolute
+    hint: Render all wiki links as absolute links.
+    default: true
+    order: 3
+    public: true
+  uriSuffix:
+    type: String
+    default: ''
+    title: uriSuffix
+    hint: Append this suffix to every URL.
+    order: 4
+    public: true
+  encodeURI:
+    type: Boolean
+    title: encodeURI
+    hint: encode wiki links
+    default: true
+    order: 5
+    public: true
